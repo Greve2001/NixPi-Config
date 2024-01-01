@@ -42,8 +42,6 @@
     };
 
     hyprland.enable = true;
-    hyprpaper.enable = true;
-
   };
 
 
@@ -54,6 +52,9 @@
       firefox
       spotify
       pavucontrol
+
+      hyprpaper
+      tofi
     ];
   };
 
@@ -78,6 +79,9 @@
   networking.hostName = "nixos"; # Define your hostname.
   networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
   networking.firewall.enable = true;
+
+  nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.allowUnsupportedSystem = true;
 
   system.copySystemConfiguration = true;
   system.stateVersion = "23.11"; # Did you read the comment?
