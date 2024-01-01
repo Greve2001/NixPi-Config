@@ -10,23 +10,13 @@
       ./hardware-configuration.nix
     ];
 
-  # Use the extlinux boot loader. (NixOS wants to enable GRUB by default)
-  boot.loader.grub.enable = false;
-  # Enables the generation of /boot/extlinux/extlinux.conf
-  boot.loader.generic-extlinux-compatible.enable = true;
+  boot = {
+    loader = {
+      grub.enable = false;
+      generic-extlinux-compatible.enable = true;
+    };
 
-  boot.kernelPackages = pkgs.linuxPackages_rpi4;
-
-  networking.hostName = "nixos"; # Define your hostname.
-  networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
-  networking.firewall.enable = true;
-  
-  users.users.tv = {
-    isNormalUser = true;
-    extraGroups = [ "wheel" ]; 
-    packages = with pkgs; [
-      firefox
-    ];
+    kernelPackages = pkgs.linuxPackages_rpi4;
   };
 
   environment.systemPackages = with pkgs; [
@@ -38,15 +28,56 @@
     wget
     git
     tree
+
+    wayland
+    xwayland
+    greetd.tuigreet
   ];
 
-  programs.mtr.enable = true;
-  programs.gnupg.agent = {
-    enable = true;
-    enableSSHSupport = true;
+  programs = {
+    mtr.enable = true;
+    gnupg.agent = {
+      enable = true;
+      enableSSHSupport = true;
+    };
+
+    hyprland.enable = true;
+    hyprpaper.enable = true;
+
   };
 
-  services.openssh.enable = true;
+
+  users.users.tv = {
+    isNormalUser = true;
+    extraGroups = [ "wheel" ]; 
+    packages = with pkgs; [
+      firefox
+      spotify
+      pavucontrol
+    ];
+  };
+
+  services = {
+    openssh.enable = true;
+    pipewire = {
+      enable = true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
+    };
+
+
+    greetd = {
+      enable = true;
+      settings = {
+        default_session = { command = "tuigreet -r -c Hyprland"; };
+      };
+    };
+  };
+ 
+  networking.hostName = "nixos"; # Define your hostname.
+  networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
+  networking.firewall.enable = true;
 
   system.copySystemConfiguration = true;
   system.stateVersion = "23.11"; # Did you read the comment?
